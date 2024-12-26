@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { AdminComponent } from './components/admin/admin.component';
+import { LayoutComponent } from "./layout/layout.component";
 
 @Component({
   selector: 'app-root',

@@ -1,0 +1,188 @@
+@if(!loading ){
+<div class="container py-4">
+    <h1 class="text-center mb-4">Room Management</h1>
+
+    <div *ngIf="showSuccessMessage" class="alert alert-success alert-dismissible fade show"
+        role="alert"> <strong>Success!</strong> Room has been Deketed successfully. 
+        <button type="button"
+            class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+        </button> 
+    </div>
+    <div *ngIf="showErrorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Error!</strong> There was an error Deleting the room. 
+        <button type="button"
+            class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+        </button>
+    </div>
+
+    <!-- Room List -->
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="col" *ngFor="let room of roomsList$ | async">
+            <div class="card h-100 shadow-sm border-0">
+                <!-- Optional Room Image -->
+                <!-- <img src="{{ room.imageUrl || 'https://via.placeholder.com/300' }}" class="card-img-top" alt="Room Image"> -->
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="card-title">Room {{ room.roomNo }}</h5>
+                        <!-- Edit and Delete Buttons -->
+                        <div class="btn-group">
+                            <button class="btn btn-outline-secondary btn-sm" (click)="editRoom(room)"
+                                data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Room">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm" (click)="deleteRoom(room.id)"
+                                data-bs-toggle="tooltip" data-bs-placement="top" title="Delete Room">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="card-text">
+                        <strong>Type:</strong> {{ room.type }}<br>
+                        <strong>Beds Available:</strong> {{ room.bedsAvailable }}<br>
+                        <strong>Occupied:</strong> {{ room.occupied }}
+                    </p>
+                </div>
+                <div class="card-footer text-center">
+                    <button class="btn btn-primary" (click)="addMember(room)">Add Member</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Add Room Button (Responsive) -->
+    <button class="btn btn-success position-fixed bottom-0 end-0 m-4" (click)="addRoomModal()">
+        Add Room
+    </button>
+
+    <!-- Success Message Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="successModalLabel">Success</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                        (click)="closeSuccessModal()"></button>
+                </div>
+                <div class="modal-body">
+                    <div *ngIf="showSuccessMessage" class="alert alert-success alert-dismissible fade show"
+                        role="alert"> <strong>Success!</strong> Room has been Deketed successfully. 
+                        <button type="button"
+                            class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                        </button> 
+                    </div>
+                    <div *ngIf="showErrorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Error!</strong> There was an error Deleting the room. 
+                        <button type="button"
+                            class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        (click)="closeSuccessModal()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Room Details Modal -->
+    <!-- <div class="modal fade" id="addMember" tabindex="-1" aria-labelledby="addMember" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="roomDetailsModalLabel">Room Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeRoomModal()"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <form  class="needs-validation" novalidate>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email address</label>
+                                    <input type="email" id="email" class="form-control" formControlName="email" placeholder="Enter email" required>
+                                    <div class="invalid-feedback">Please enter a valid email address.</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="phone" class="form-label">Phone Number</label>
+                                    <input type="text" id="phone" class="form-control" formControlName="phone" placeholder="Enter phone number" required>
+                                    <div class="invalid-feedback">Please enter a valid phone number.</div>
+                                </div>
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-success">Add Member</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="closeRoomModal()">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+     -->
+    <!-- Add Room Modal -->
+    <div class="modal fade" id="addRoomModal" tabindex="-1" aria-labelledby="addRoomModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addRoomModalLabel">Add New Room</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                        (click)="closeRoomModal()"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Success and Error Messages -->
+                    <div *ngIf="showSuccessMessage" class="alert alert-success alert-dismissible fade show"
+                        role="alert"> <strong>Success!</strong> Room has been added successfully. 
+                        <button type="button"
+                            class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                        </button> 
+                    </div>
+                    <div *ngIf="showErrorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Error!</strong> There was an error adding the room. 
+                        <button type="button"
+                            class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                        </button>
+                    </div>
+                        <!-- Add Room Form -->
+                        <div class="row">
+                            <form [formGroup]="addRoomForm" (ngSubmit)="addRoom()" class="needs-validation" novalidate>
+                                <div class="mb-3">
+                                    <label for="roomNumber" class="form-label">Room Number</label>
+                                    <input type="text" id="roomNumber" class="form-control" formControlName="roomNo"
+                                        placeholder="Enter room number" required>
+                                    <div class="invalid-feedback">Please enter a room number.</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="type" class="form-label">Room Type</label>
+                                    <select id="type" class="form-control" formControlName="roomType" required>
+                                        <option value="">Select room type</option>
+                                        <option value="1">Single</option>
+                                        <option value="2">Double</option>
+                                        <option value="3">Shared</option>
+                                    </select>
+
+                                    <div class="invalid-feedback">Please enter the room type.</div>
+                                </div>
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-success" [disabled]="addRoomForm.invalid">Add
+                                        Room</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                            (click)="closeRoomModal()">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    }
+    @else{
+    <!-- Loading Spinner -->
+    <div *ngIf="loading" class="d-flex justify-content-center align-items-center">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+    }

@@ -1,0 +1,20 @@
+.card {
+    transition: transform 0.2s ease-in-out;
+}
+.card:hover {
+    transform: scale(1.05);
+}
+
+.btn-outline-secondary:hover {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.btn-outline-danger:hover {
+    background-color: #ffdddd;
+    color: #a00;
+}
+
+.card {
+    border-radius: 10px;
+}
