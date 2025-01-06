@@ -8,3 +8,19 @@ export class RoomDto{
         this.roomType=roomType
     }
 }
+
+export class MemberDto{
+    fullName: string;
+    email: string;
+    phoneNumber:string;
+    roomId:bigint;
+    constructor(fullName: string,
+        email: string,
+        phoneNumber:string,
+        roomId:bigint){
+            this.fullName= fullName,
+            this.email= email,
+            this.phoneNumber=phoneNumber,
+            this.roomId=roomId
+    }
+}

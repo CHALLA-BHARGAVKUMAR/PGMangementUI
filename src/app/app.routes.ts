@@ -5,21 +5,25 @@ import { LayoutComponent } from './layout/layout.component';
 import { AdmindashboardComponent } from './components/admindashboard/admindashboard.component';
 import { RoomsComponent } from './components/rooms/rooms.component';
 import { MembersComponent } from './components/members/members.component';
+import { RoomsWithMembersComponent } from './components/rooms-with-members/rooms-with-members.component';
+import { LoginComponent } from './login/login.component';
 
 export const routes: Routes = [
-    {
-        path:'',
-        redirectTo:'layout',
-        pathMatch:'full'
-    },
+
     {
      path:'admin',
      component:AdminComponent,
     // canActivate:[authGuard]
     },    
     {
+        path:'login',
+        component:LoginComponent,
+       // canActivate:[authGuard]
+       }, 
+    {
         path:'',
         component:LayoutComponent,
+        canActivate:[authGuard],
         children:[
             
             {
@@ -37,7 +41,11 @@ export const routes: Routes = [
                 component:MembersComponent,
                // canActivate:[authGuard]
             },
-            
+            {
+                path:'rooms-details',
+                component:RoomsWithMembersComponent,
+               // canActivate:[authGuard]
+            },
         ]
        // canActivate:[authGuard]
     }

@@ -1,0 +1,14 @@
+.cursor-pointer {
+    cursor: pointer;
+  }
+  
+  .table th {
+    text-align: center;
+    user-select: none;
+  }
+  
+  .fas {
+    font-size: 0.9rem;
+    margin-left: 5px;
+  }
+  

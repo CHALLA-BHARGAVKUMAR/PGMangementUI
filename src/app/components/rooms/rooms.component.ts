@@ -26,6 +26,14 @@ export class RoomsComponent implements OnInit{
     roomType: new FormControl('', Validators.required)
 
   });
+
+  addMemberForm: FormGroup = new FormGroup({
+    fullName: new FormControl('', Validators.required),
+    Email: new FormControl('', Validators.required),
+    phoneNumber: new FormControl('', Validators.required),
+    RoomId: new FormControl('1', Validators.required)
+
+  });
   
   ngOnInit(): void {
     this.getAllRooms()
@@ -35,8 +43,8 @@ export class RoomsComponent implements OnInit{
 selectedRoom: any = null;
 
 getAllRooms(){
-  this.roomsList$=this.masterService.getAllRooms().pipe(map((response: ApiResponse) => response.result));
-  this.loading=false;
+  // this.roomsList$=this.masterService.getAllRooms().pipe(map((response: ApiResponse) => response.result));
+  // this.loading=false;
 }
 
 
@@ -63,6 +71,28 @@ addRoom(){
   }
 };
 
+onAddMember(){
+  if (this.addMemberForm.valid) {
+    const formValues = this.addMemberForm.value;
+    formValues.roomId = parseInt(this.selectedRoom.id, 10);
+    this.masterService.addMember(formValues).subscribe((res:ApiResponse)=>{
+      if(res.result==true){
+        this.showSuccessMessage=true;
+        setTimeout(() => { this.showSuccessMessage=false;this.closeRoomModal(); }, 2000);
+        this.getAllRooms()
+        this.addMemberForm.reset();
+      }
+      else{
+        this.showErrorMessage=true;
+      }
+    })
+    
+  } else {
+    // Handle invalid form (show messages, etc.)
+    console.log("Form is invalid.");
+  }
+}
+
 addMember(room:any){
   this.selectedRoom = room;
     const modal = new bootstrap.Modal(document.getElementById('addMember')!);
@@ -83,6 +113,22 @@ editRoom(room:any){
 }
 deleteRoom(id:any){
   this.masterService.deleteRoom(id).subscribe((res:ApiResponse)=>{
+    if(res.result==true){
+      this.showSuccessMessage=res.result;
+      setTimeout(() => { this.showSuccessMessage=false;}, 5000);
+      this.getAllRooms();
+    }
+    else{
+    this.showErrorMessage=true;
+    setTimeout(() => { this.showErrorMessage=false;}, 5000);
+    }
+    
+  });
+  
+}
+
+deleteMember(id:any){
+  this.masterService.deleteMember(id).subscribe((res:ApiResponse)=>{
     if(res.result==true){
       this.showSuccessMessage=res.result;
       setTimeout(() => { this.showSuccessMessage=false;}, 5000);

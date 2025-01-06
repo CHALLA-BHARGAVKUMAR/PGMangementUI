@@ -1,0 +1,148 @@
+<div class="container mt-4">
+    <h2>Room List</h2>
+  
+    <div class="row">
+      <!-- Left Side: Room List Table -->
+      <div class="col-md-6">
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th (click)="onSort('id')" class="cursor-pointer">
+                ID
+                <span *ngIf="sortBy === 'id'">
+                  <i *ngIf="!sortDescending" class="fas fa-arrow-up"></i>
+                  <i *ngIf="sortDescending" class="fas fa-arrow-down"></i>
+                </span>
+              </th>
+              <th (click)="onSort('roomNo')" class="cursor-pointer">
+                Room No
+                <span *ngIf="sortBy === 'roomNo'">
+                  <i *ngIf="!sortDescending" class="fas fa-arrow-up"></i>
+                  <i *ngIf="sortDescending" class="fas fa-arrow-down"></i>
+                </span>
+              </th>
+              <th (click)="onSort('occupied')" class="cursor-pointer">
+                Occupied
+                <span *ngIf="sortBy === 'occupied'">
+                  <i *ngIf="!sortDescending" class="fas fa-arrow-up"></i>
+                  <i *ngIf="sortDescending" class="fas fa-arrow-down"></i>
+                </span>
+              </th>
+              <th (click)="onSort('bedsAvailable')" class="cursor-pointer">
+                Beds Available
+                <span *ngIf="sortBy === 'bedsAvailable'">
+                  <i *ngIf="!sortDescending" class="fas fa-arrow-up"></i>
+                  <i *ngIf="sortDescending" class="fas fa-arrow-down"></i>
+                </span>
+              </th>
+              <th (click)="onSort('capacity')" class="cursor-pointer">
+                Capacity
+                <span *ngIf="sortBy === 'capacity'">
+                  <i *ngIf="!sortDescending" class="fas fa-arrow-up"></i>
+                  <i *ngIf="sortDescending" class="fas fa-arrow-down"></i>
+                </span>
+              </th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let room of rooms" (click)="onRoomClick(room)">
+              <td>{{ room.id }}</td>
+              <td>{{ room.roomNo }}</td>
+              <td>{{ room.occupied }}</td>
+              <td>{{ room.bedsAvailable }}</td>
+              <td>{{ room.capacity }}</td>
+              <td>
+                <button (click)="onEditRoom(room.id)" class="btn btn-sm btn-warning">Edit</button>
+                <button (click)="onDeleteRoom(room.id)" class="btn btn-sm btn-danger">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+  
+      <!-- Right Side: Member Details or Add Member Form -->
+      <div class="col-md-6" *ngIf="selectedRoom">
+        <div class="card">
+          <div class="card-header">
+            <h3>Members in Room: {{ selectedRoom.roomNo }}</h3>
+          </div>
+          <div class="card-body">
+            <h5>Room Details</h5>
+            <p><strong>Capacity:</strong> {{ selectedRoom.capacity }}</p>
+            <p><strong>Beds Available:</strong> {{ selectedRoom.bedsAvailable }}</p>
+            <p><strong>Occupied:</strong> {{ selectedRoom.occupied }}</p>
+  
+            <hr />
+            <h5>Members:</h5>
+            <ul>
+              <li *ngFor="let member of selectedRoom.members">
+                {{ member.fullName }} 
+                <button (click)="onRemoveMember(selectedRoom.id, member.id)" class="btn btn-sm btn-danger">Remove</button>
+              </li>
+            </ul>
+  
+            <!-- Add Member Form -->
+            <button (click)="onShowAddMemberForm()" class="btn btn-sm btn-primary">Add Member</button>
+            
+            <!-- Add Member Form Displayed Here -->
+            <div *ngIf="showAddMemberForm">
+              <h5>Add Member</h5>
+              <form [formGroup]="addMemberForm" (ngSubmit)="onAddMember()">
+                <div class="mb-3">
+                  <label for="fullName" class="form-label">Full Name</label>
+                  <input id="fullName" formControlName="fullName" class="form-control" />
+                  <div *ngIf="addMemberForm.get('fullName')?.invalid && addMemberForm.get('fullName')?.touched" class="text-danger">
+                    Full Name is required
+                  </div>
+                </div>
+  
+                <div class="mb-3">
+                  <label for="Email" class="form-label">Email</label>
+                  <input id="Email" formControlName="Email" type="email" class="form-control" />
+                  <div *ngIf="addMemberForm.get('Email')?.invalid && addMemberForm.get('Email')?.touched" class="text-danger">
+                    Email is required
+                  </div>
+                </div>
+  
+                <div class="mb-3">
+                  <label for="phoneNumber" class="form-label">Phone Number</label>
+                  <input id="phoneNumber" formControlName="phoneNumber" class="form-control" />
+                  <div *ngIf="addMemberForm.get('phoneNumber')?.invalid && addMemberForm.get('phoneNumber')?.touched" class="text-danger">
+                    Phone Number is required
+                  </div>
+                </div>
+  
+                <button type="submit"  class="btn btn-primary">Submit</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Pagination Controls with Page Size Selection -->
+    <nav aria-label="Room list pagination">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <label for="pageSize" class="form-label">Items per page:</label>
+          <select id="pageSize" class="form-select" [(ngModel)]="pageSize" (change)="onPageSizeChange()">
+            <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>
+          </select>
+        </div>
+  
+        <ul class="pagination justify-content-center mb-0">
+          <li class="page-item" [class.disabled]="pageNumber === 1" (click)="pageNumber > 1 && onPageChange(pageNumber - 1)">
+            <a class="page-link" href="javascript:void(0);">Previous</a>
+          </li>
+          <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index" [class.active]="pageNumber === i + 1" (click)="onPageChange(i + 1)">
+            <a class="page-link" href="javascript:void(0);">{{ i + 1 }}</a>
+          </li>
+          <li class="page-item" [class.disabled]="pageNumber === totalPages" (click)="pageNumber < totalPages && onPageChange(pageNumber + 1)">
+            <a class="page-link" href="javascript:void(0);">Next</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+  
